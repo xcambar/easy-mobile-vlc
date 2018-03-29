@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const URI = require('uri-js')
 const fs = require('fs-extra')
 const pathModule = require('path')
 
@@ -24,7 +25,8 @@ function walk (root) {
       return isValidFile || isDirectory
     })
     .map((name) => {
-      let url = pathModule.join(root, name).replace(STATIC_LOCATION, '')
+      let raw = pathModule.join(root, name).replace(STATIC_LOCATION, '')
+      let url = URI.serialize(URI.parse(raw))
       return { url, name }
     })
 }
@@ -37,8 +39,9 @@ app.get('*', async ({ path }, res) => {
   }
   let stats = await fs.stat(path)
   if (stats.isFile()) {
-    let location = path.replace(STATIC_LOCATION, '')
-    return res.redirect(`${STATIC_ROOT_URL}/${location}`)
+    let raw = path.replace(STATIC_LOCATION, '')
+    let url = URI.serialize(URI.parse(raw))
+    return res.redirect(`${STATIC_ROOT_URL}/${url}`)
   }
   if (stats.isDirectory()) {
     return res.render('index', { structure: walk(path) })
