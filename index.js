@@ -38,7 +38,8 @@ app.get('*', async ({ path }, res) => {
   }
   let stats = await fs.stat(path)
   if (stats.isFile()) {
-    return res.redirect(`${STATIC_ROOT_URL}/${path}`)
+    let location = path.replace(STATIC_LOCATION, '')
+    return res.redirect(`${STATIC_ROOT_URL}/${location}`)
   }
   if (stats.isDirectory()) {
     return res.render('index', { structure: walk(path) })
