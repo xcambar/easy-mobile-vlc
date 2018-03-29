@@ -24,8 +24,7 @@ function walk (root) {
       return isValidFile || isDirectory
     })
     .map((name) => {
-      let url = STATIC_ROOT_URL +
-        pathModule.join(root, name).replace(STATIC_LOCATION, '')
+      let url = pathModule.join(root, name).replace(STATIC_LOCATION, '')
       return { url, name }
     })
 }
