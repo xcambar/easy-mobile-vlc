@@ -41,7 +41,7 @@ app.get('*', async ({ path }, res) => {
   let stats = await fs.stat(path)
   if (stats.isFile()) {
     path = path.replace(STATIC_LOCATION, '')
-    let url = URI.serialize(URI.parse(`${STATIC_ROOT_URL}/${path}`))
+    let url = URI.serialize(URI.parse(`vlc://${STATIC_ROOT_URL}/${path}`))
     return res.redirect(url)
   }
   if (stats.isDirectory()) {
