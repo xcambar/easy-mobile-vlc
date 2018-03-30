@@ -32,6 +32,7 @@ function walk (root) {
 }
 
 app.get('*', async ({ path }, res) => {
+  path = URI.unescapeComponent(path)
   path = pathModule.join(STATIC_LOCATION, path)
   let exists = await fs.pathExists(path)
   if (!exists) {
@@ -39,9 +40,9 @@ app.get('*', async ({ path }, res) => {
   }
   let stats = await fs.stat(path)
   if (stats.isFile()) {
-    let raw = path.replace(STATIC_LOCATION, '')
-    let url = URI.serialize(URI.parse(raw))
-    return res.redirect(`${STATIC_ROOT_URL}/${url}`)
+    path = path.replace(STATIC_LOCATION, '')
+    let url = URI.serialize(URI.parse(`${STATIC_ROOT_URL}/${path}`))
+    return res.redirect(url)
   }
   if (stats.isDirectory()) {
     return res.render('index', { structure: walk(path) })
